@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giriş Sistemi</title>
+  <style>
+    body { font-family: Arial; background: #f1f1f1; padding: 20px; }
+    .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+    h2 { text-align: center; }
+    input { width: 100%; padding: 10px; margin: 10px 0; }
+    button { width: 100%; padding: 10px; background: #3498db; color: white; border: none; cursor: pointer; }
+    button:hover { background: #2980b9; }
+    .hidden { display: none; }
+    #user-list { margin-top: 20px; }
+    .user-item { padding: 5px; border-bottom: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+  <div class="container" id="login-container">
+    <h2>Giriş Yap</h2>
+    <input type="email" id="login-email" placeholder="E-posta" />
+    <input type="password" id="login-password" placeholder="Şifre" />
+    <button id="login-button">Giriş Yap</button>
+    <p style="text-align:center;">veya</p>
+    <button onclick="toggleRegister()">Kayıt Ol</button>
+  </div>
+
+  <div class="container hidden" id="register-container">
+    <h2>Kayıt Ol</h2>
+    <input type="text" id="register-name" placeholder="Ad Soyad" />
+    <input type="email" id="register-email" placeholder="E-posta" />
+    <input type="password" id="register-password" placeholder="Şifre" />
+    <button id="register-button">Kayıt Ol</button>
+    <button onclick="toggleRegister()">Girişe Dön</button>
+  </div>
+
+  <div class="container hidden" id="user-panel">
+    <h2>Hoşgeldin <span id="user-name"></span></h2>
+    <button onclick="logout()">Çıkış Yap</button>
+  </div>
+
+  <div class="container hidden" id="admin-panel">
+    <h2>Admin Paneli</h2>
+    <button onclick="logout()">Çıkış Yap</button>
+    <div id="user-list"></div>
+  </div>
+
+  <script>
+    const adminEmail = "admin@example.com";
+    const adminPassword = "1234";
+
+    function getUsers() {
+      return JSON.parse(localStorage.getItem("users")) || [];
+    }
+
+    function saveUsers(users) {
+      localStorage.setItem("users", JSON.stringify(users));
+    }
+
+    function toggleRegister() {
+      document.getElementById("login-container").classList.toggle("hidden");
+      document.getElementById("register-container").classList.toggle("hidden");
+    }
+
+    function showUserPanel(user) {
+      document.getElementById("login-container").classList.add("hidden");
+      document.getElementById("register-container").classList.add("hidden");
+      document.getElementById("user-name").innerText = user.name;
+      document.getElementById("user-panel").classList.remove("hidden");
+    }
+
+    function showAdminPanel() {
+      document.getElementById("login-container").classList.add("hidden");
+      document.getElementById("register-container").classList.add("hidden");
+      document.getElementById("admin-panel").classList.remove("hidden");
+      const userList = document.getElementById("user-list");
+      userList.innerHTML = "<h3>Tüm Kullanıcılar</h3>";
+      getUsers().forEach(u => {
+        userList.innerHTML += `<div class="user-item">${u.name} (${u.email})</div>`;
+      });
+    }
+
+    function logout() {
+      location.reload();
+    }
+
+    document.getElementById("register-button").onclick = function () {
+      const name = document.getElementById("register-name").value;
+      const email = document.getElementById("register-email").value;
+      const password = document.getElementById("register-password").value;
+
+      if (!name || !email || !password) {
+        alert("Lütfen tüm alanları doldurun.");
+        return;
+      }
+
+      let users = getUsers();
+      if (users.some(u => u.email === email)) {
+        alert("Bu e-posta ile kayıtlı kullanıcı var.");
+        return;
+      }
+
+      const newUser = { name, email, password, role: "user" };
+      users.push(newUser);
+      saveUsers(users);
+      showUserPanel(newUser);
+    };
+
+    document.getElementById("login-button").onclick = function () {
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
+
+      if (email === adminEmail && password === adminPassword) {
+        showAdminPanel();
+        return;
+      }
+
+      const users = getUsers();
+      const user = users.find(u => u.email === email && u.password === password);
+
+      if (user) {
+        showUserPanel(user);
+      } else {
+        alert("Hatalı giriş.");
+      }
+    };
+  </script>
+</body>
+</html>

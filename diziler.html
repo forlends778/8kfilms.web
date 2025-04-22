@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dizi Listesi</title>
+  <style>
+    /* Genel stil */
+    body {
+      background-color: #121212;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    
+    /* Navbar */
+    .navbar {
+      background-color: #333;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar .logo a {
+      color: white;
+      font-size: 24px;
+      text-decoration: none;
+    }
+    .navbar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+    }
+    .navbar ul li {
+      margin-right: 20px;
+    }
+    .navbar ul li a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+    }
+    .navbar ul li a:hover {
+      color: #ff4d4d;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    /* Dizi Listesi */
+    .film-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .film {
+      background: #1e1e1e;
+      border-radius: 8px;
+      width: 220px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    .film img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+    }
+    .film-info {
+      padding: 15px;
+    }
+    .film-info h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+    .film-info p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #ccc;
+    }
+    .film button {
+      width: 100%;
+      padding: 10px;
+      background: #ff4d4d;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .film button:hover {
+      background: #e33;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    .modal-content {
+      background: #1e1e1e;
+      padding: 30px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 600px;
+      color: white;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 10px; right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #aaa;
+    }
+    .modal-close:hover {
+      color: #ff4d4d;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .film-list {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .film {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">
+      <a href="#">LOGO</a>
+    </div>
+    <ul>
+      <li><a href="index.html">Ana Sayfa</a></li>
+      <li><a href="hakkimizda.html">Hakkımızda</a></li>
+      <li><a href="filmler.html">Filmler</a></li>
+      <li><a href="diziler.html">Diziler</a></li>
+      <li><a href="anime.html">Anime</a></li>
+    </ul>
+  </div>
+
+  <!-- Dizi Listesi -->
+  <div class="container">
+    <h1>Dizi Listesi</h1>
+    <div class="film-list" id="filmListesi"></div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="filmModal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="modalKapat()">&times;</span>
+      <h2 id="modalBaslik"></h2>
+      <p><strong>Yönetmen:</strong> <span id="modalYonetmen"></span></p>
+      <p><strong>IMDB:</strong> <span id="modalIMDB"></span></p>
+      <p><strong>Açıklama:</strong></p>
+      <p id="modalAciklama"></p>
+    </div>
+  </div>
+
+  <script>
+const diziler = [
+    {
+        baslik: "Breaking Bad",
+        yonetmen: "Vince Gilligan",
+        imdb: "9.5",
+        aciklama: "Bir kimya öğretmeninin, ailesini geçindirmek için suç dünyasına adım atmasını konu alır.",
+        yil: 2008,
+        tur: "Suç, Dram, Gerilim",
+        resim: "diziler/breaking-bad.png"
+    },
+    {
+        baslik: "Chernobyl",
+        yonetmen: "Craig Mazin",
+        imdb: "9.4",
+        aciklama: "1986'daki Çernobil nükleer felaketinin sebeplerini ve etkilerini anlatır.",
+        yil: 2019,
+        tur: "Dram, Tarih, Gerilim",
+        resim: "diziler/chernobyl.png"
+    },
+    {
+        baslik: "Game of Thrones",
+        yonetmen: "David Benioff, D.B. Weiss",
+        imdb: "9.3",
+        aciklama: "Yedi Krallık'ta taht için verilen amansız mücadeleleri konu alır.",
+        yil: 2011,
+        tur: "Aksiyon, Macera, Fantastik",
+        resim: "diziler/game-of-thrones.png"
+    },
+    {
+        baslik: "The Wire",
+        yonetmen: "David Simon",
+        imdb: "9.3",
+        aciklama: "Baltimore'daki uyuşturucu ticaretini ve polis mücadelesini konu alır.",
+        yil: 2002,
+        tur: "Suç, Dram",
+        resim: "diziler/the-wire.png"
+    },
+    {
+        baslik: "Sherlock",
+        yonetmen: "Mark Gatiss, Steven Moffat",
+        imdb: "9.1",
+        aciklama: "Ünlü dedektif Sherlock Holmes'un modern versiyonunu anlatan bir dizi.",
+        yil: 2010,
+        tur: "Suç, Dram, Gizem",
+        resim: "diziler/sherlock.png"
+    },
+    {
+        baslik: "Stranger Things",
+        yonetmen: "Matt Duffer, Ross Duffer",
+        imdb: "8.7",
+        aciklama: "Küçük bir kasabada kaybolan bir çocuğun etrafında gelişen doğaüstü olaylar.",
+        yil: 2016,
+        tur: "Drama, Bilim Kurgu, Korku",
+        resim: "diziler/stranger-things.png"
+    },
+    {
+        baslik: "The Mandalorian",
+        yonetmen: "Jon Favreau",
+        imdb: "8.8",
+        aciklama: "Yıldız Savaşları evreninde geçen, bir Mandaloryalı ödül avcısının hikayesi.",
+        yil: 2019,
+        tur: "Aksiyon, Macera, Bilim Kurgu",
+        resim: "diziler/mandalorian.png"
+    },
+    {
+        baslik: "The Sopranos",
+        yonetmen: "David Chase",
+        imdb: "9.2",
+        aciklama: "New Jersey'de mafya lideri olan Tony Soprano'nun psikolojik mücadeleleri ve suç dünyasındaki liderliği.",
+        yil: 1999,
+        tur: "Suç, Dram",
+        resim: "diziler/sopranos.png"
+    },
+    {
+        baslik: "Dark",
+        yonetmen: "Baran bo Odar",
+        imdb: "8.8",
+        aciklama: "Almanya'nın küçük bir kasabasında zaman yolculuğuna dair gizemli olayların ortaya çıkışını anlatır.",
+        yil: 2017,
+        tur: "Bilim Kurgu, Gerilim",
+        resim: "diziler/dark.png"
+    },
+    {
+        baslik: "Mindhunter",
+        yonetmen: "Joe Penhall",
+        imdb: "8.6",
+        aciklama: "FBI ajanlarının seri katillerin psikolojisini anlamaya çalıştıkları dönemi konu alır.",
+        yil: 2017,
+        tur: "Suç, Dram, Gerilim",
+        resim: "diziler/mindhunter.png"
+    },
+    {
+        baslik: "Peaky Blinders",
+        yonetmen: "Steven Knight",
+        imdb: "8.8",
+        aciklama: "Birinci Dünya Savaşı sonrası Birmingham, İngiltere'deki suçlu ailelerin öyküsünü konu alır.",
+        yil: 2013,
+        tur: "Suç, Dram",
+        resim: "diziler/peaky-blinders.png"
+    },
+    {
+        baslik: "Fargo",
+        yonetmen: "Noah Hawley",
+        imdb: "8.9",
+        aciklama: "Küçük bir kasabada işlenen suçları anlatan ve Coen Kardeşler'in filmine dayanan bir dizi.",
+        yil: 2014,
+        tur: "Suç, Dram, Gerilim",
+        resim: "diziler/fargo.png"
+    },
+    {
+        baslik: "Westworld",
+        yonetmen: "Jonathan Nolan, Lisa Joy",
+        imdb: "8.6",
+        aciklama: "Yüksek teknolojiyle donatılmış bir tema parkındaki yapay zekaların ayaklanmasını konu alır.",
+        yil: 2016,
+        tur: "Bilim Kurgu, Dram, Gerilim",
+        resim: "diziler/westworld.png"
+    },
+    {
+        baslik: "The Crown",
+        yonetmen: "Peter Morgan",
+        imdb: "8.7",
+        aciklama: "Kraliçe II. Elizabeth'in hükümet yönetimini ve ailesinin iç ilişkilerini konu alır.",
+        yil: 2016,
+        tur: "Biyografi, Dram, Tarih",
+        resim: "diziler/the-crown.png"
+    },
+    {
+        baslik: "Better Call Saul",
+        yonetmen: "Vince Gilligan",
+        imdb: "9.0",
+        aciklama: "Breaking Bad'den tanıdığımız avukat Saul Goodman'ın geçmişini anlatan bir dizi.",
+        yil: 2015,
+        tur: "Suç, Dram",
+        resim: "diziler/better-call-saul.png"
+    },
+    {
+        baslik: "Narcos",
+        yonetmen: "José Padilha",
+        imdb: "8.8",
+        aciklama: "Kolombiya'daki uyuşturucu kartellerinin yükselişi ve Amerika'nın uyuşturucuya karşı mücadelesini anlatır.",
+        yil: 2015,
+        tur: "Suç, Dram",
+        resim: "diziler/narcos.png"
+    },
+    {
+        baslik: "Band of Brothers",
+        yonetmen: "David Frankel",
+        imdb: "9.4",
+        aciklama: "II. Dünya Savaşı sırasında bir grup Amerikan askerinin yaşadığı olayları anlatan mini dizi.",
+        yil: 2001,
+        tur: "Dram, Savaş",
+        resim: "diziler/band-of-brothers.png"
+    },
+    {
+        baslik: "Ozark",
+        yonetmen: "Bill Dubuque, Mark Williams",
+        imdb: "8.5",
+        aciklama: "Ailesini korumak için suç dünyasına adım atan bir finans danışmanının hikayesini anlatır.",
+        yil: 2017,
+        tur: "Suç, Dram, Gerilim",
+        resim: "diziler/ozark.png"
+    },
+    {
+        baslik: "The Haunting of Hill House",
+        yonetmen: "Mike Flanagan",
+        imdb: "8.6",
+        aciklama: "Geçmişin gölgelerinin ve bir lanetin peşinden gelen bir aileyi konu alır.",
+        yil: 2018,
+        tur: "Korku, Dram, Gizem",
+        resim: "diziler/haunting.png"
+    }
+];
+
+  const filmListesi = document.getElementById("filmListesi");
+
+  diziler.forEach((dizi, index) => {
+    const filmDiv = document.createElement("div");
+    filmDiv.className = "film";
+    filmDiv.innerHTML = `
+      <img src="${dizi.resim}" alt="${dizi.baslik}">
+      <div class="film-info">
+        <h3>${dizi.baslik}</h3>
+        <p>Yönetmen: ${dizi.yonetmen}</p>
+        <p>IMDB: ${dizi.imdb}</p>
+        <p>Yıl: ${dizi.yil}</p>
+        <p>Tür: ${dizi.tur}</p>
+        <button onclick="filmDetayGoster(${index})">Detaylar</button>
+      </div>
+    `;
+    filmListesi.appendChild(filmDiv);
+  });
+
+  function filmDetayGoster(index) {
+    const dizi = diziler[index];
+    document.getElementById("modalBaslik").textContent = dizi.baslik;
+    document.getElementById("modalYonetmen").textContent = dizi.yonetmen;
+    document.getElementById("modalIMDB").textContent = dizi.imdb;
+    document.getElementById("modalAciklama").textContent = dizi.aciklama;
+    document.getElementById("filmModal").style.display = "flex";
+  }
+
+  function modalKapat() {
+    document.getElementById("filmModal").style.display = "none";
+  }
+  </script>
+</body>
+</html>

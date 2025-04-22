@@ -1,0 +1,63 @@
+/* Genel stil */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container{
+    background: url(12.jpg);  
+    height: 100vh;
+    background-size:100% 100%
+}
+
+.navbar {
+    width: 100%;
+    background-color:#333; /* Navbar'a tam genişlikte arka plan rengi */
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar .logo a {
+    color: white;
+    text-decoration: none;
+    font-size: 24px;
+    padding-left: 20px;
+}
+
+.navbar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: space-around;
+}
+
+.navbar ul li {
+    display: inline;
+}
+
+.navbar ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    padding: 10px 20px;
+    display: block; /* Bu satır eklenmeli */
+    transition: background-color 0.3s ease; /* Hover efekti için geçiş */
+}
+
+/* Hover efekti */
+.navbar ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.3); /* Hover efekti */
+    border-radius: 5px;
+}
+
+/* Mobil uyumluluk */
+@media (max-width: 768px) {
+    .navbar ul {
+        flex-direction: column;
+        align-items: center;
+    }
+}

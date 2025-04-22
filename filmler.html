@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Film Listesi</title>
+  <style>
+    /* Genel stil */
+    body {
+      background-color: #121212;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    
+    /* Navbar */
+    .navbar {
+      background-color: #333;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar .logo a {
+      color: white;
+      font-size: 24px;
+      text-decoration: none;
+    }
+    .navbar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+    }
+    .navbar ul li {
+      margin-right: 20px;
+    }
+    .navbar ul li a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+    }
+    .navbar ul li a:hover {
+      color: #ff4d4d;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    /* Film Listesi */
+    .film-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .film {
+      background: #1e1e1e;
+      border-radius: 8px;
+      width: 220px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    .film img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+    }
+    .film-info {
+      padding: 15px;
+    }
+    .film-info h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+    .film-info p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #ccc;
+    }
+    .film button {
+      width: 100%;
+      padding: 10px;
+      background: #ff4d4d;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .film button:hover {
+      background: #e33;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    .modal-content {
+      background: #1e1e1e;
+      padding: 30px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 600px;
+      color: white;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 10px; right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #aaa;
+    }
+    .modal-close:hover {
+      color: #ff4d4d;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .film-list {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .film {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">
+      <a href="#">LOGO</a>
+    </div>
+    <ul>
+      <li><a href="index.html">Ana Sayfa</a></li>
+      <li><a href="hakkimizda.html">Hakkımızda</a></li>
+      <li><a href="filmler.html">Filmler</a></li>
+      <li><a href="diziler.html">Diziler</a></li>
+      <li><a href="anime.html">Anime</a></li>
+    </ul>
+  </div>
+
+  <!-- Film Listesi -->
+  <div class="container">
+    <h1>Film Listesi</h1>
+    <div class="film-list" id="filmListesi"></div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="filmModal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="modalKapat()">&times;</span>
+      <h2 id="modalBaslik"></h2>
+      <p><strong>Yönetmen:</strong> <span id="modalYonetmen"></span></p>
+      <p><strong>IMDB:</strong> <span id="modalIMDB"></span></p>
+      <p><strong>Açıklama:</strong></p>
+      <p id="modalAciklama"></p>
+    </div>
+  </div>
+
+  <script>
+  const filmler = [
+    {
+        baslik: "Esaretin Bedeli",
+        yonetmen: "Frank Darabont",
+        imdb: "9.3",
+        aciklama: "Haksız yere hapse atılan bir adamın umut dolu mücadelesi.",
+        yil: 1994,
+        tur: "Dram",
+        resim: "filimler/film-resim1.png"
+    },
+    {
+        baslik: "Baba",
+        yonetmen: "Francis Ford Coppola",
+        imdb: "9.2",
+        aciklama: "Mafya ailesinin başındaki adamın hikayesi.",
+        yil: 1972,
+        tur: "Suç, Dram",
+        resim: "filimler/film-resim2.png"
+    },
+    {
+        baslik: "Kara Şövalye",
+        yonetmen: "Christopher Nolan",
+        imdb: "9.0",
+        aciklama: "Batman ve Joker arasındaki efsane mücadele.",
+        yil: 2008,
+        tur: "Aksiyon, Suç, Dram",
+        resim: "filimler/film-resim3.png"
+    },
+    {
+        baslik: "Matrix",
+        yonetmen: "Wachowski Kardeşler",
+        imdb: "8.7",
+        aciklama: "Gerçeklik ve simülasyon arasındaki sınırları zorlayan bir film.",
+        yil: 1999,
+        tur: "Aksiyon, Bilim Kurgu",
+        resim: "filimler/film-resim4.png"
+    },
+    {
+        baslik: "The Dark Knight Rises",
+        yonetmen: "Christopher Nolan",
+        imdb: "8.4",
+        aciklama: "Gotham'ı yeniden kurtarmaya çalışan Batman'in hikayesi.",
+        yil: 2012,
+        tur: "Aksiyon, Suç, Dram",
+        resim: "filimler/film-resim41.png"
+    },
+    {
+        baslik: "Inception",
+        yonetmen: "Christopher Nolan",
+        imdb: "8.8",
+        aciklama: "Rüya içinde rüya, zihin kontrolüyle ilgili heyecan verici bir film.",
+        yil: 2010,
+        tur: "Aksiyon, Bilim Kurgu, Gerilim",
+        resim: "filimler/film-resim5.png"
+    },
+    {
+        baslik: "Fight Club",
+        yonetmen: "David Fincher",
+        imdb: "8.8",
+        aciklama: "Modern yaşamın sıkıntılarından kaçan bir adamın hikayesi.",
+        yil: 1999,
+        tur: "Dram, Gerilim",
+        resim: "filimler/film-resim6.png"
+    },
+    {
+        baslik: "Pulp Fiction",
+        yonetmen: "Quentin Tarantino",
+        imdb: "8.9",
+        aciklama: "Birbirine bağlı hikayelerle dolu, unutulmaz bir suç filmi.",
+        yil: 1994,
+        tur: "Suç, Dram",
+        resim: "filimler/film-resim7.png"
+    },
+    {
+        baslik: "Forrest Gump",
+        yonetmen: "Robert Zemeckis",
+        imdb: "8.8",
+        aciklama: "Hayatın ona sunduğu fırsatları kaçırmayan bir adamın yolculuğu.",
+        yil: 1994,
+        tur: "Dram",
+        resim: "filimler/film-resim8.png"
+    },
+    {
+        baslik: "The Truman Show",
+        yonetmen: "Peter Weir",
+        imdb: "8.3",
+        aciklama: "truman Burbank, harika bir adada yaşayıp mutlu bir hayat sürer ancak gerçekte, yaşamı 24 saat boyunca dünya çapında yayınlanan bir televizyon şovudur. ",
+        yil: 1998,
+        tur:  "drama, bilim kurgu ve satir",
+        resim: "filimler/film-resim9.png"
+    },
+    {
+        baslik: "The Godfather Part II",
+        yonetmen: "Francis Ford Coppola",
+        imdb: "9.0",
+        aciklama: "Bir mafya ailesinin yaşadığı iç çatışmalar.",
+        yil: 1974,
+        tur: "Suç, Dram",
+        resim: "filimler/film-resim10.png"
+    },
+    {
+        baslik: "The Lord of the Rings: The Return of the King",
+        yonetmen: "Peter Jackson",
+        imdb: "8.9",
+        aciklama: "Yüzüklerin Efendisi serisinin son filmi.",
+        yil: 2003,
+        tur: "Aksiyon, Macera, Dram",
+        resim: "filimler/film-resim11.png"
+    },
+    {
+        baslik: "The Matrix Reloaded",
+        yonetmen: "Wachowski Kardeşler",
+        imdb: "7.2",
+        aciklama: "Neo, Matrix dünyasında daha büyük bir mücadeleye girer.",
+        yil: 2003,
+        tur: "Aksiyon, Bilim Kurgu",
+        resim: "filimler/film-resim12.png"
+    },
+    {
+        baslik: "The Lord of the Rings: The Fellowship of the Ring",
+        yonetmen: "Peter Jackson",
+        imdb: "8.8",
+        aciklama: "Güç Yüzüğü'nün peşinden bir yolculuğa çıkmaya karar veren kahramanlar.",
+        yil: 2001,
+        tur: "Aksiyon, Macera, Dram",
+        resim: "filimler/film-resim13.png"
+    },
+    {
+        baslik: "Interstellar",
+        yonetmen: "Christopher Nolan",
+        imdb: "8.6",
+        aciklama: "Uzayda bir kurtuluş arayışı.",
+        yil: 2014,
+        tur: "Bilim Kurgu, Dram",
+        resim: "filimler/film-resim14.png"
+    },
+    {
+        baslik: "Se7en",
+        yonetmen: "David Fincher",
+        imdb: "8.6",
+        aciklama: "İki dedektifin bir seri katili yakalamak için verdiği mücadele.",
+        yil: 1995,
+        tur: "Suç, Dram, Gerilim",
+        resim: "filimler/film-resim15.png"
+    },
+    {
+        baslik: "The Silence of the Lambs",
+        yonetmen: "Jonathan Demme",
+        imdb: "8.6",
+        aciklama: "Bir FBI ajanı ve bir psikopat katil arasındaki gerilimli ilişki.",
+        yil: 1991,
+        tur: "Suç, Dram, Gerilim",
+        resim: "filimler/film-resim16.png"
+    },
+    {
+        baslik: "The Prestige",
+        yonetmen: "Christopher Nolan",
+        imdb: "8.5",
+        aciklama: "İki sihirbazın rekabeti ve gizemli dünyası.",
+        yil: 2006,
+        tur: "Dram, Gizem, Bilim Kurgu",
+        resim: "filimler/film-resim17.png"
+    },
+    {
+        baslik: "Whiplash",
+        yonetmen: "Damien Chazelle",
+        imdb: "8.5",
+        aciklama: "Bir müzik öğrencisinin, çılgın bir öğretmeniyle yaşadığı gerilimli süreç.",
+        yil: 2014,
+        tur: "Dram, Müzik",
+        resim: "filimler/film-resim18.png"
+    },
+    {
+        baslik: "Parasite",
+        yonetmen: "Bong Joon-ho",
+        imdb: "8.6",
+        aciklama: "Zengin bir aileye sızmaya çalışan yoksul bir ailenin hikayesi.",
+        yil: 2019,
+        tur: "Komedi, Dram, Gerilim",
+        resim: "filimler/film-resim19.png"
+    }
+  ];
+
+  const filmListesi = document.getElementById("filmListesi");
+
+  filmler.forEach((film, index) => {
+    const filmDiv = document.createElement("div");
+    filmDiv.className = "film";
+    filmDiv.innerHTML = `
+      <img src="${film.resim}" alt="${film.baslik}">
+      <div class="film-info">
+        <h3>${film.baslik}</h3>
+        <p>Yönetmen: ${film.yonetmen}</p>
+        <p>IMDB: ${film.imdb}</p>
+        <p>Yıl: ${film.yil}</p>
+        <p>Tür: ${film.tur}</p>
+        <button onclick="filmDetayGoster(${index})">Detaylar</button>
+      </div>
+    `;
+    filmListesi.appendChild(filmDiv);
+  });
+
+  function filmDetayGoster(index) {
+    const film = filmler[index];
+    document.getElementById("modalBaslik").textContent = film.baslik;
+    document.getElementById("modalYonetmen").textContent = film.yonetmen;
+    document.getElementById("modalIMDB").textContent = film.imdb;
+    document.getElementById("modalAciklama").textContent = film.aciklama;
+    document.getElementById("filmModal").style.display = "flex";
+  }
+
+  function modalKapat() {
+    document.getElementById("filmModal").style.display = "none";
+  }
+  </script>
+</body>
+</html>

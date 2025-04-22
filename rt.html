@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kullanıcı Portalı</title>
+  <style>
+    :root {
+      --primary-color: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary-color: #f0f9ff;
+      --text-color: #1e293b;
+      --light-text: #64748b;
+      --success: #10b981;
+      --error: #ef4444;
+      --warning: #f59e0b;
+      --border-color: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f8fafc;
+      color: var(--text-color);
+      line-height: 1.5; 
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .auth-container { 
+      max-width: 450px;
+      margin: 80px auto;
+    }
+    
+    h1, h2, h3, h4 {
+      color: var(--text-color);
+      margin-bottom: 15px;
+    }
+    
+    h1 {
+      font-size: 28px;
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 10px;
+      margin-bottom: 25px;
+    }
+    
+    h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    h3 {
+      font-size: 20px;
+      margin-top: 25px;
+    }
+
+    p {
+      margin-bottom: 15px;
+    }
+    
+    .logo {
+      font-size: 32px;
+      font-weight: bold;
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .logo span {
+      color: var(--text-color);
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 18px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 16px;
+      transition: border 0.3s ease;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      margin-top: 10px;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    button.secondary {
+      background: white;
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+    }
+
+    button.secondary:hover {
+      background: var(--secondary-color);
+    }
+
+    button.danger {
+      background: var(--error);
+    }
+
+    button.danger:hover {
+      background: #dc2626;
+    }
+
+    button.small {
+      width: auto;
+      padding: 6px 12px;
+      font-size: 14px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .message {
+      padding: 12px;
+      border-radius: 6px;
+      margin: 15px 0;
+      text-align: center;
+    }
+
+    .error-message {
+      background: #fee2e2;
+      color: var(--error);
+      border: 1px solid #fecaca;
+    }
+
+    .success-message {
+      background: #dcfce7;
+      color: var(--success);
+      border: 1px solid #bbf7d0;
+    }
+
+    .form-divider {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .form-divider:before,
+    .form-divider:after {
+      content: "";
+      flex: 1;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .form-divider span {
+      margin: 0 15px;
+      color: var(--light-text);
+    }
+
+    .nav-menu {
+      background: var(--primary-color);
+      padding: 0;
+      margin-bottom: 30px;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .nav-links {
+      display: flex;
+    }
+
+    .nav-menu button { 
+      background: none; 
+      border: none;
+      border-radius: 0;
+      color: white; 
+      margin: 0;
+      padding: 15px 25px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      width: auto;
+      transition: background 0.3s ease;
+      border-radius: 8px;
+    }
+
+    .nav-menu button:hover, 
+    .nav-menu button.active { 
+      background: var(--primary-dark);
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      color: white;
+      padding: 0 20px;
+    }
+
+    .nav-user span {
+      margin-right: 10px;
+    }
+
+    .profile-section {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .profile-info {
+      flex: 1;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .profile-actions {
+      flex: 1;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .stats-card {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .stat-item {
+      flex: 1;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--primary-color);
+      margin: 10px 0;
+    }
+
+    .stat-label {
+      color: var(--light-text);
+      font-size: 14px;
+    }
+
+    .comment-item {
+      background: #f8fafc;
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 8px;
+      border-left: 4px solid var(--primary-color);
+    }
+
+    .comment-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .comment-author {
+      font-weight: bold;
+    }
+
+    .comment-date {
+      font-size: 14px;
+      color: var(--light-text);
+    }
+
+    .comment-text {
+      line-height: 1.6;
+    }
+
+    .tab-content {
+      margin-top: 20px;
+    }
+
+    .user-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      margin: 10px 0;
+      background: #f8fafc;
+      border-radius: 8px;
+      border-left: 4px solid var(--primary-color);
+    }
+
+    .user-details {
+      flex: 1;
+    }
+
+    .user-email {
+      color: var(--light-text);
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: var(--light-text);
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .section-title h2 {
+      margin-bottom: 0;
+      text-align: left;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .badge-primary {
+      background-color: #dbeafe;
+      color: var(--primary-color);
+    }
+
+    .badge-success {
+      background-color: #dcfce7;
+      color: var(--success);
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--light-text);
+      font-size: 14px;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Giriş Ekranı -->
+  <div class="container auth-container" id="login-container">
+    <div class="logo">Portal<span>X</span></div>
+    <h2>Giriş Yap</h2>
+    
+    <div>
+      <label for="login-email">E-posta Adresi</label>
+      <input type="email" id="login-email" placeholder="E-posta adresinizi girin" />
+    </div>
+    
+    <div>
+      <label for="login-password">Şifre</label>
+      <input type="password" id="login-password" placeholder="Şifrenizi girin" />
+    </div>
+    
+    <button id="login-button">Giriş Yap</button>
+    
+    <div id="login-message"></div>
+    
+    <div class="form-divider">
+      <span>Hesabınız yok mu?</span>
+    </div>
+    
+    <button class="secondary" onclick="toggleRegister()">Yeni Hesap Oluştur</button>
+  </div>
+
+  <!-- Kayıt Ekranı -->
+  <div class="container auth-container hidden" id="register-container">
+    <div class="logo">Portal<span>X</span></div>
+    <h2>Yeni Hesap Oluştur</h2>
+    
+    <div>
+      <label for="register-name">Ad Soyad</label>
+      <input type="text" id="register-name" placeholder="Adınızı ve soyadınızı girin" />
+    </div>
+    
+    <div>
+      <label for="register-email">E-posta Adresi</label>
+      <input type="email" id="register-email" placeholder="E-posta adresinizi girin" />
+    </div>
+    
+    <div>
+      <label for="register-password">Şifre</label>
+      <input type="password" id="register-password" placeholder="Güçlü bir şifre oluşturun" />
+    </div>
+    
+    <button id="register-button">Kayıt Ol</button>
+    
+    <div id="register-message"></div>
+    
+    <div class="form-divider">
+      <span>Zaten hesabınız var mı?</span>
+    </div>
+    
+    <button class="secondary" onclick="toggleRegister()">Giriş Sayfasına Dön</button>
+  </div>
+
+  <!-- Kullanıcı Panel Ana Sayfa -->
+  <div class="hidden" id="user-panel">
+    <!-- Menü -->
+    <div class="nav-menu">
+      <div class="nav-links">
+        <button id="profile-btn" onclick="showTab('profile-tab')">Profil</button>
+        <button id="comments-btn" onclick="showTab('comments-tab')">Yorumlar</button>
+      </div>
+      <div class="nav-user">
+        <span id="header-user-name"></span>
+        <button class="small" onclick="logout()">Çıkış</button>
+      </div>
+    </div>
+    
+    <!-- Profil Sekmesi -->
+    <div class="container" id="profile-tab">
+      <h1>Kullanıcı Profili</h1>
+      
+      <div class="stats-card">
+        <div class="stat-item">
+          <div class="stat-label">Toplam Yorum</div>
+          <div class="stat-number" id="user-comment-count">0</div>
+          <div>Yaptığınız yorum sayısı</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Hesap Durumu</div>
+          <div class="stat-number" style="color: var(--success);">Aktif</div>
+          <div>Hesabınız aktif durumda</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Üyelik Süresi</div>
+          <div class="stat-number" id="user-days">0</div>
+          <div>Gündür üyesiniz</div>
+        </div>
+      </div>
+      
+      <div class="profile-section">
+        <div class="profile-info">
+          <h3>Kullanıcı Bilgileri</h3>
+          <p><strong>Ad Soyad:</strong> <span id="user-name"></span></p>
+          <p><strong>E-posta:</strong> <span id="user-email"></span></p>
+          <p><strong>Üyelik Tarihi:</strong> <span id="user-date"></span></p>
+          <p><strong>Son Giriş:</strong> <span id="user-last-login"></span></p>
+        </div>
+        
+        <div class="profile-actions">
+          <h3>Profil Güncelle</h3>
+          <div>
+            <label for="update-name">Ad Soyad</label>
+            <input type="text" id="update-name" placeholder="Adınızı ve soyadınızı girin" />
+          </div>
+          
+          <div>
+            <label for="update-password">Yeni Şifre <small>(Değiştirmek istemiyorsanız boş bırakın)</small></label>
+            <input type="password" id="update-password" placeholder="Yeni şifrenizi girin" />
+          </div>
+          
+          <button id="update-profile-button">Profili Güncelle</button>
+          <div id="update-message"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Yorumlar Sekmesi -->
+    <div class="container hidden" id="comments-tab">
+      <div class="section-title">
+        <h1>Site Yorumları</h1>
+      </div>
+      
+      <div class="profile-section">
+        <div class="profile-info">
+          <h3>Yeni Yorum Ekle</h3>
+          <div>
+            <label for="new-comment">Yorumunuz</label>
+            <textarea id="new-comment" placeholder="Düşüncelerinizi buraya yazabilirsiniz..."></textarea>
+          </div>
+          <button id="add-comment-button">Yorum Ekle</button>
+          <div id="comment-message"></div>
+        </div>
+        
+        <div class="profile-actions">
+          <h3>İpuçları</h3>
+          <p>- Yorumlarınız diğer kullanıcılar tarafından görülebilir.</p>
+          <p>- Yorumlarınızda saygılı bir dil kullanmaya özen gösterin.</p>
+          <p>- Eklediğiniz yorumlar site yöneticileri tarafından denetlenir.</p>
+          <p>- Reklam içeren veya uygunsuz yorumlar yöneticiler tarafından kaldırılabilir.</p>
+        </div>
+      </div>
+      
+      <div id="comments-list">
+        <h3>Tüm Yorumlar</h3>
+        <div id="comments-container">
+          <!-- Yorumlar buraya dinamik olarak eklenecek -->
+          <div class="loading">Yorumlar yükleniyor...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Panel -->
+  <div class="hidden" id="admin-panel">
+    <div class="nav-menu">
+      <div class="nav-links">
+        <button id="users-btn" onclick="showAdminTab('users-tab')">Kullanıcılar</button>
+        <button id="admin-comments-btn" onclick="showAdminTab('admin-comments-tab')">Tüm Yorumlar</button>
+      </div>
+      <div class="nav-user">
+        <span>Admin Panel</span>
+        <button class="small" onclick="logout()">Çıkış</button>
+      </div>
+    </div>
+    
+    <div class="container" id="users-tab">
+      <div class="section-title">
+        <h1>Kullanıcı Yönetimi</h1>
+        <span class="badge badge-primary" id="user-count-badge">0 Kullanıcı</span>
+      </div>
+      
+      <div id="user-list">
+        <!-- Kullanıcılar buraya dinamik olarak eklenecek -->
+        <div class="loading">Kullanıcılar yükleniyor...</div>
+      </div>
+    </div>
+    
+    <div class="container hidden" id="admin-comments-tab">
+      <div class="section-title">
+        <h1>Tüm Yorumlar</h1>
+        <span class="badge badge-primary" id="comment-count-badge">0 Yorum</span>
+      </div>
+      
+      <div id="admin-comments-list">
+        <!-- Tüm yorumlar buraya dinamik olarak eklenecek -->
+        <div class="loading">Yorumlar yükleniyor...</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 M.K - Tüm hakları saklıdır.
+  </footer>
+
+  <script>
+    // Sabit admin bilgileri
+    const adminEmail = "admin@example.com";
+    const adminPassword = "1234";
+    
+    // Geçerli kullanıcıyı tutan değişken
+    let currentUser = null;
+    let activeTab = 'profile-tab';
+    let activeAdminTab = 'users-tab';
+
+    // LocalStorage fonksiyonları
+    function getUsers() {
+      try {
+        const usersData = localStorage.getItem("users");
+        return usersData ? JSON.parse(usersData) : [];
+      } catch (e) {
+        console.error("LocalStorage okuma hatası:", e);
+        return [];
+      }
+    }
+
+    function saveUsers(users) {
+      try {
+        localStorage.setItem("users", JSON.stringify(users));
+        return true;
+      } catch (e) {
+        console.error("LocalStorage yazma hatası:", e);
+        return false;
+      }
+    }
+    
+    function getComments() {
+      try {
+        const commentsData = localStorage.getItem("comments");
+        return commentsData ? JSON.parse(commentsData) : [];
+      } catch (e) {
+        console.error("LocalStorage yorum okuma hatası:", e);
+        return [];
+      }
+    }
+    
+    function saveComments(comments) {
+      try {
+        localStorage.setItem("comments", JSON.stringify(comments));
+        return true;
+      } catch (e) {
+        console.error("LocalStorage yorum yazma hatası:", e);
+        return false;
+      }
+    }
+
+    // Sayfa geçişleri
+    function toggleRegister() {
+      document.getElementById("login-container").classList.toggle("hidden");
+      document.getElementById("register-container").classList.toggle("hidden");
+      // Mesaj alanlarını temizle
+      clearMessages();
+    }
+
+    function showUserPanel(user) {
+      currentUser = user;
+      
+      document.getElementById("login-container").classList.add("hidden");
+      document.getElementById("register-container").classList.add("hidden");
+      document.getElementById("admin-panel").classList.add("hidden");
+      document.getElementById("user-panel").classList.remove("hidden");
+      
+      // Kullanıcı bilgilerini güncelle
+      updateUserInfo(user);
+      
+      // Varsayılan sekmeyi göster
+      showTab(activeTab);
+      
+      // Kullanıcının son giriş tarihini güncelle
+      updateLastLogin(user.email);
+    }
+    
+    function updateUserInfo(user) {
+      // Üst menüdeki kullanıcı adını güncelle
+      document.getElementById("header-user-name").innerText = user.name;
+      
+      // Profil bilgilerini güncelle
+      document.getElementById("user-name").innerText = user.name || "Belirtilmemiş";
+      document.getElementById("user-email").innerText = user.email || "Belirtilmemiş";
+      document.getElementById("user-date").innerText = user.registerDate || "Belirtilmemiş";
+      document.getElementById("user-last-login").innerText = user.lastLogin || "İlk giriş";
+      
+      // Profil güncelleme alanını doldur
+      document.getElementById("update-name").value = user.name || "";
+      
+      // Kullanıcı istatistiklerini güncelle
+      updateUserStats(user);
+    }
+    
+    function updateLastLogin(email) {
+      const users = getUsers();
+      const userIndex = users.findIndex(u => u.email === email);
+      
+      if (userIndex !== -1) {
+        const now = new Date();
+        users[userIndex].lastLogin = formatDate(now);
+        saveUsers(users);
+        
+        // Görünümü güncelle
+        document.getElementById("user-last-login").innerText = formatDate(now);
+      }
+    }
+    
+    function updateUserStats(user) {
+      // Kullanıcının yorum sayısını hesapla
+      const comments = getComments();
+      const userComments = comments.filter(c => c.userEmail === user.email);
+      document.getElementById("user-comment-count").innerText = userComments.length;
+      
+      // Üyelik süresini hesapla
+      if (user.registerDate) {
+        const registerDate = new Date(parseDate(user.registerDate));
+        const now = new Date();
+        const diffTime = Math.abs(now - registerDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        document.getElementById("user-days").innerText = diffDays;
+      } else {
+        document.getElementById("user-days").innerText = "0";
+      }
+    }
+    
+    // Tarih string'inden Date nesnesi oluştur
+    function parseDate(dateString) {
+      // Türkçe tarih formatından JavaScript Date'e çevirme
+      const parts = dateString.split(' ')[0].split('.');
+      if (parts.length === 3) {
+        return `${parts[2]}-${parts[1]}-${parts[0]}`;
+      }
+      return dateString;
+    }
+    
+    function showTab(tabId) {
+      // Aktif tab'ı kaydet
+      activeTab = tabId;
+      
+      // Tüm sekmeleri gizle
+      document.getElementById("profile-tab").classList.add("hidden");
+      document.getElementById("comments-tab").classList.add("hidden");
+      
+      // Tüm butonları normal duruma getir
+      document.getElementById("profile-btn").classList.remove("active");
+      document.getElementById("comments-btn").classList.remove("active");
+      
+      // İstenen sekmeyi göster
+      document.getElementById(tabId).classList.remove("hidden");
+      
+      // İlgili butonu aktif yap
+      if (tabId === "profile-tab") {
+        document.getElementById("profile-btn").classList.add("active");
+      } else if (tabId === "comments-tab") {
+        document.getElementById("comments-btn").classList.add("active");
+        loadComments();
+      }
+    }
+    
+    function showAdminTab(tabId) {
+      // Aktif admin tab'ını kaydet
+      activeAdminTab = tabId;
+      
+      // Tüm admin sekmelerini gizle
+      document.getElementById("users-tab").classList.add("hidden");
+      document.getElementById("admin-comments-tab").classList.add("hidden");
+      
+      // Tüm butonları normal duruma getir
+      document.getElementById("users-btn").classList.remove("active");
+      document.getElementById("admin-comments-btn").classList.remove("active");
+      
+      // İstenen sekmeyi göster
+      document.getElementById(tabId).classList.remove("hidden");
+      
+      // İlgili butonu aktif yap
+      if (tabId === "users-tab") {
+        document.getElementById("users-btn").classList.add("active");
+        updateUserList();
+      } else if (tabId === "admin-comments-tab") {
+        document.getElementById("admin-comments-btn").classList.add("active");
+        loadAdminComments();
+      }
+    }
+
+    function showAdminPanel() {
+      document.getElementById("login-container").classList.add("hidden");
+      document.getElementById("register-container").classList.add("hidden");
+      document.getElementById("user-panel").classList.add("hidden");
+      document.getElementById("admin-panel").classList.remove("hidden");
+      
+      // Varsayılan admin sekmesini göster
+      showAdminTab(activeAdminTab);
+    }
+    
+    function updateUserList() {
+      const userList = document.getElementById("user-list");
+      userList.innerHTML = ""; // İçeriği temizle
+      
+      const users = getUsers();
+      
+      // Kullanıcı sayısı rozetini güncelle
+      document.getElementById("user-count-badge").innerText = `${users.length} Kullanıcı`;
+      
+      if (users.length === 0) {
+        userList.innerHTML = "<p class='loading'>Henüz kayıtlı kullanıcı yok.</p>";
+        return;
+      }
+      
+      users.forEach(user => {
+        const registerDate = user.registerDate || "Belirtilmemiş";
+        const lastLogin = user.lastLogin || "Giriş yapılmamış";
+        
+        userList.innerHTML += `
+          <div class="user-item">
+            <div class="user-details">
+              <div><strong>${user.name || "İsimsiz Kullanıcı"}</strong></div>
+              <div class="user-email">${user.email}</div>
+              <div style="font-size: 14px; color: var(--light-text);">
+                Kayıt: ${registerDate} | Son Giriş: ${lastLogin}
+              </div>
+            </div>
+            <div class="action-buttons">
+              <button class="small danger" onclick="deleteUser('${user.email}')">Sil</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+    
+    function deleteUser(email) {
+      if (confirm("Bu kullanıcıyı silmek istediğinize emin misiniz?")) {
+        let users = getUsers();
+        users = users.filter(u => u.email !== email);
+        if (saveUsers(users)) {
+          updateUserList();
+          
+          // Kullanıcının yorumlarını da sil
+          let comments = getComments();
+          comments = comments.filter(c => c.userEmail !== email);
+          saveComments(comments);
+          
+          showMessage("Kullanıcı başarıyla silindi.", "success", "user-list");
+        }
+      }
+    }
+
+    function logout() {
+      currentUser = null;
+      document.getElementById("login-container").classList.remove("hidden");
+      document.getElementById("register-container").classList.add("hidden");
+      document.getElementById("user-panel").classList.add("hidden");
+      document.getElementById("admin-panel").classList.add("hidden");
+      
+      // Form alanlarını temizle
+      document.getElementById("login-email").value = "";
+      document.getElementById("login-password").value = "";
+      document.getElementById("register-name").value = "";
+      document.getElementById("register-email").value = "";
+      document.getElementById("register-password").value = "";
+      
+      // Mesaj alanlarını temizle
+      clearMessages();
+    }
+    
+    function clearMessages() {
+      const messageElements = document.querySelectorAll(".message");
+      messageElements.forEach(element => {
+        element.innerHTML = "";
+        element.className = "message";
+      });
+    }
+    
+    function showMessage(text, type, containerId) {
+      const messageElement = document.getElementById(containerId);
+      if (!messageElement) return;
+      
+      messageElement.innerHTML = text;
+      messageElement.className = type === "success" ? "message success-message" : "message error-message";
+    }
+    
+    function loadComments() {
+      const commentsList = document.getElementById("comments-container");
+      commentsList.innerHTML = ""; // İçeriği temizle
+
+
+    // loadComments fonksiyonunun devamı
+    if (comments.length === 0) {
+        commentsList.innerHTML = "<p class='loading'>Henüz yorum yapılmamış.</p>";
+        return;
+      }
+      
+      // Yorumları yeniden eskiye sırala
+      comments.sort((a, b) => new Date(parseDate(b.date)) - new Date(parseDate(a.date)));
+      
+      comments.forEach(comment => {
+        const userName = getUserNameByEmail(comment.userEmail) || "İsimsiz Kullanıcı";
+        
+        commentsList.innerHTML += `
+          <div class="comment-item">
+            <div class="comment-header">
+              <div class="comment-author">${userName}</div>
+              <div class="comment-date">${comment.date}</div>
+            </div>
+            <div class="comment-text">${comment.text}</div>
+          </div>
+        `;
+      });
+    }
+    
+    function loadAdminComments() {
+      const commentsList = document.getElementById("admin-comments-list");
+      commentsList.innerHTML = ""; // İçeriği temizle
+      
+      const comments = getComments();
+      
+      // Yorum sayısı rozetini güncelle
+      document.getElementById("comment-count-badge").innerText = `${comments.length} Yorum`;
+      
+      if (comments.length === 0) {
+        commentsList.innerHTML = "<p class='loading'>Henüz yorum yapılmamış.</p>";
+        return;
+      }
+      
+      // Yorumları yeniden eskiye sırala
+      comments.sort((a, b) => new Date(parseDate(b.date)) - new Date(parseDate(a.date)));
+      
+      comments.forEach((comment, index) => {
+        const userName = getUserNameByEmail(comment.userEmail) || "İsimsiz Kullanıcı";
+        
+        commentsList.innerHTML += `
+          <div class="comment-item">
+            <div class="comment-header">
+              <div class="comment-author">${userName} <span style="font-size: 12px; color: var(--light-text);">(${comment.userEmail})</span></div>
+              <div class="comment-date">${comment.date}</div>
+            </div>
+            <div class="comment-text">${comment.text}</div>
+            <div style="text-align: right; margin-top: 10px;">
+              <button class="small danger" onclick="deleteComment(${index})">Yorumu Sil</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+    
+    function deleteComment(index) {
+      if (confirm("Bu yorumu silmek istediğinize emin misiniz?")) {
+        let comments = getComments();
+        comments.splice(index, 1);
+        if (saveComments(comments)) {
+          loadAdminComments();
+          showMessage("Yorum başarıyla silindi.", "success", "admin-comments-list");
+        }
+      }
+    }
+    
+    function getUserNameByEmail(email) {
+      const users = getUsers();
+      const user = users.find(u => u.email === email);
+      return user ? user.name : null;
+    }
+    
+    // Tarih formatı oluştur
+    function formatDate(date) {
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      
+      return `${day}.${month}.${year} ${hours}:${minutes}`;
+    }
+    
+    // Kayıt ol butonu tıklandığında
+    document.getElementById("register-button").addEventListener("click", function() {
+      const name = document.getElementById("register-name").value.trim();
+      const email = document.getElementById("register-email").value.trim();
+      const password = document.getElementById("register-password").value;
+      
+      if (!name || !email || !password) {
+        showMessage("Lütfen tüm alanları doldurun.", "error", "register-message");
+        return;
+      }
+      
+      // Emailin geçerli olup olmadığını kontrol et
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        showMessage("Lütfen geçerli bir e-posta adresi girin.", "error", "register-message");
+        return;
+      }
+      
+      // Kullanıcının zaten kayıtlı olup olmadığını kontrol et
+      const users = getUsers();
+      if (users.some(user => user.email === email)) {
+        showMessage("Bu e-posta adresi zaten kullanılıyor.", "error", "register-message");
+        return;
+      }
+      
+      // Yeni kullanıcı oluştur
+      const now = new Date();
+      const newUser = {
+        name: name,
+        email: email,
+        password: password, // Gerçek uygulamalarda şifre hashlenmeli!
+        registerDate: formatDate(now),
+        lastLogin: formatDate(now)
+      };
+      
+      users.push(newUser);
+      
+      if (saveUsers(users)) {
+        showMessage("Kayıt başarılı! Giriş yapabilirsiniz.", "success", "register-message");
+        setTimeout(() => {
+          toggleRegister(); // Giriş sayfasına yönlendir
+        }, 2000);
+      } else {
+        showMessage("Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyin.", "error", "register-message");
+      }
+    });
+    
+    // Giriş yap butonu tıklandığında
+    document.getElementById("login-button").addEventListener("click", function() {
+      const email = document.getElementById("login-email").value.trim();
+      const password = document.getElementById("login-password").value;
+      
+      if (!email || !password) {
+        showMessage("Lütfen e-posta ve şifrenizi girin.", "error", "login-message");
+        return;
+      }
+      
+      // Admin girişi kontrol et
+      if (email === adminEmail && password === adminPassword) {
+        showAdminPanel();
+        return;
+      }
+      
+      // Normal kullanıcı girişi kontrol et
+      const users = getUsers();
+      const user = users.find(u => u.email === email && u.password === password);
+      
+      if (user) {
+        showUserPanel(user);
+      } else {
+        showMessage("E-posta veya şifre hatalı.", "error", "login-message");
+      }
+    });
+    
+    // Profil güncelleme butonu tıklandığında
+    document.getElementById("update-profile-button").addEventListener("click", function() {
+      if (!currentUser) return;
+      
+      const name = document.getElementById("update-name").value.trim();
+      const newPassword = document.getElementById("update-password").value;
+      
+      if (!name) {
+        showMessage("Lütfen adınızı ve soyadınızı girin.", "error", "update-message");
+        return;
+      }
+      
+      const users = getUsers();
+      const userIndex = users.findIndex(u => u.email === currentUser.email);
+      
+      if (userIndex !== -1) {
+        users[userIndex].name = name;
+        
+        // Şifre değiştirilmek isteniyorsa güncelle
+        if (newPassword) {
+          users[userIndex].password = newPassword;
+        }
+        
+        if (saveUsers(users)) {
+          // Mevcut kullanıcı bilgilerini güncelle
+          currentUser = users[userIndex];
+          updateUserInfo(currentUser);
+          
+          showMessage("Profil başarıyla güncellendi.", "success", "update-message");
+        } else {
+          showMessage("Profil güncellenirken bir hata oluştu.", "error", "update-message");
+        }
+      }
+    });
+    
+    // Yorum ekleme butonu tıklandığında
+    document.getElementById("add-comment-button").addEventListener("click", function() {
+      if (!currentUser) return;
+      
+      const commentText = document.getElementById("new-comment").value.trim();
+      
+      if (!commentText) {
+        showMessage("Lütfen bir yorum yazın.", "error", "comment-message");
+        return;
+      }
+      
+      const now = new Date();
+      const newComment = {
+        userEmail: currentUser.email,
+        text: commentText,
+        date: formatDate(now)
+      };
+      
+      let comments = getComments();
+      comments.push(newComment);
+      
+      if (saveComments(comments)) {
+        document.getElementById("new-comment").value = ""; // Formu temizle
+        showMessage("Yorumunuz başarıyla eklendi.", "success", "comment-message");
+        
+        // Yorum listesini yenile
+        loadComments();
+        
+        // Kullanıcı istatistiklerini güncelle
+        updateUserStats(currentUser);
+      } else {
+        showMessage("Yorum eklenirken bir hata oluştu.", "error", "comment-message");
+      }
+    });
+    
+    // Enter tuşu ile giriş yapma
+    document.getElementById("login-password").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        document.getElementById("login-button").click();
+      }
+    });
+    
+    // Enter tuşu ile kayıt olma
+    document.getElementById("register-password").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        document.getElementById("register-button").click();
+      }
+    });
+    
+    // Sayfa yüklendiğinde
+    window.onload = function() {
+      // LocalStorage'ı başlat
+      if (!localStorage.getItem("users")) {
+        saveUsers([]);
+      }
+      
+      if (!localStorage.getItem("comments")) {
+        saveComments([]);
+      }
+    };
+  </script>
+</body>
+</html>

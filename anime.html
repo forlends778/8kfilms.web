@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Anime Listesi</title>
+  <style>
+    /* Genel stil */
+    body {
+      background-color: #121212;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: #333;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar .logo a {
+      color: white;
+      font-size: 24px;
+      text-decoration: none;
+    }
+    .navbar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+    }
+    .navbar ul li {
+      margin-right: 20px;
+    }
+    .navbar ul li a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+    }
+    .navbar ul li a:hover {
+      color: #ff4d4d;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    /* Anime Listesi */
+    .anime-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .anime {
+      background: #1e1e1e;
+      border-radius: 8px;
+      width: 220px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    .anime img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+    }
+    .anime-info {
+      padding: 15px;
+    }
+    .anime-info h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+    .anime-info p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #ccc;
+    }
+    .anime button {
+      width: 100%;
+      padding: 10px;
+      background: #ff4d4d;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .anime button:hover {
+      background: #e33;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    .modal-content {
+      background: #1e1e1e;
+      padding: 30px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 600px;
+      color: white;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 10px; right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #aaa;
+    }
+    .modal-close:hover {
+      color: #ff4d4d;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .anime-list {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .anime {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">
+      <a href="#">LOGO</a>
+    </div>
+    <ul>
+      <li><a href="index.html">Ana Sayfa</a></li>
+      <li><a href="hakkimizda.html">Hakkımızda</a></li>
+      <li><a href="filmler.html">Filmler</a></li>
+      <li><a href="diziler.html">Diziler</a></li>
+      <li><a href="anime.html">Anime</a></li>
+    </ul>
+  </div>
+
+  <!-- Anime Listesi -->
+  <div class="container">
+    <h1>Anime Listesi</h1>
+    <div class="anime-list" id="animeListesi"></div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="animeModal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="modalKapat()">&times;</span>
+      <h2 id="modalBaslik"></h2>
+      <p><strong>Yönetmen:</strong> <span id="modalYonetmen"></span></p>
+      <p><strong>IMDB:</strong> <span id="modalIMDB"></span></p>
+      <p><strong>Açıklama:</strong></p>
+      <p id="modalAciklama"></p>
+    </div>
+  </div>
+
+  <script>
+const animeler = [
+    {
+        baslik: "Attack on Titan",
+        yonetmen: "Tetsurō Araki",
+        imdb: "8.9",
+        aciklama: "Devasa canavarlar tarafından yok edilen insanları hayatta tutma mücadelesini anlatır.",
+        yil: 2013,
+        tur: "Aksiyon, Macera, Fantastik",
+        resim: "animeler/attack-on-titan.png"
+    },
+    {
+        baslik: "Fullmetal Alchemist: Brotherhood",
+        yonetmen: "Yasuhiro Irie",
+        imdb: "9.1",
+        aciklama: "İki kardeşin, kaybettikleri vücutlarını geri almak için başlattıkları yolculuğu konu alır.",
+        yil: 2009,
+        tur: "Aksiyon, Macera, Dram",
+        resim: "animeler/fullmetal-alchemist.png"
+    },
+    {
+        baslik: "Steins;Gate",
+        yonetmen: "Hiroshi Hamasaki",
+        imdb: "8.8",
+        aciklama: "Zaman yolculuğu ve paralel evrenler üzerine kurulu bir hikayeyi anlatır.",
+        yil: 2011,
+        tur: "Bilim Kurgu, Dram, Gizem",
+        resim: "animeler/steins-gate.png"
+    },
+    {
+        baslik: "Death Note",
+        yonetmen: "Tetsurō Araki",
+        imdb: "8.9",
+        aciklama: "Bir lise öğrencisinin, ölüm yazan bir defteri kullanarak dünya çapında suçlu avına çıkmasını konu alır.",
+        yil: 2006,
+        tur: "Suç, Dram, Gerilim",
+        resim: "animeler/death-note.png"
+    },
+    {
+        baslik: "Naruto",
+        yonetmen: "Hayato Date",
+        imdb: "8.3",
+        aciklama: "Bir ninja olarak büyük bir lider olmayı hedefleyen genç bir adamın hikayesi.",
+        yil: 2002,
+        tur: "Aksiyon, Macera, Shounen",
+        resim: "animeler/naruto.png"
+    },
+    {
+        baslik: "My Hero Academia",
+        yonetmen: "Kenji Nagasaki",
+        imdb: "8.5",
+        aciklama: "Herkesin süper güçlere sahip olduğu bir dünyada, bir çocuğun kahramanlık yolundaki mücadelesi.",
+        yil: 2016,
+        tur: "Aksiyon, Okul, Süper Kahraman",
+        resim: "animeler/my-hero-academia.png"
+    },
+    {
+        baslik: "One Punch Man",
+        yonetmen: "Shingo Natsume",
+        imdb: "8.8",
+        aciklama: "Bir tek yumrukla her düşmanı alt eden sıradan bir adamın komik ve aksiyon dolu hikayesi.",
+        yil: 2015,
+        tur: "Aksiyon, Komedi, Süper Kahraman",
+        resim: "animeler/one-punch-man.png"
+    },
+    {
+        baslik: "Tokyo Ghoul",
+        yonetmen: "Suzuki Shuhei",
+        imdb: "8.0",
+        aciklama: "Bir gencin, yarı insan yarı ghoul olmasının ardından yaşadığı zorlukları anlatan bir hikaye.",
+        yil: 2014,
+        tur: "Korku, Aksiyon, Gerilim",
+        resim: "animeler/tokyo-ghoul.png"
+    },
+    {
+        baslik: "Neon Genesis Evangelion",
+        yonetmen: "Hideaki Anno",
+        imdb: "8.5",
+        aciklama: "Zihinsel ve ruhsal temalarla harmanlanmış bir mecha anime, insanlık ve mecha robotlarının savaşı.",
+        yil: 1995,
+        tur: "Aksiyon, Dram, Psikolojik",
+        resim: "animeler/evangelion.png"
+    },
+    {
+        baslik: "Cowboy Bebop",
+        yonetmen: "Shinichirō Watanabe",
+        imdb: "8.9",
+        aciklama: "Bir grup uzaylı ödül avcısının, galaksi boyunca suçluları yakalama mücadelesini konu alır.",
+        yil: 1998,
+        tur: "Aksiyon, Bilim Kurgu, Suç",
+        resim: "animeler/cowboy-bebop.png"
+    }
+];
+
+  const animeListContainer = document.getElementById("animeListesi");
+
+  animeler.forEach((anime, index) => {
+    const animeDiv = document.createElement("div");
+    animeDiv.className = "anime";
+    animeDiv.innerHTML = `
+      <img src="${anime.resim}" alt="${anime.baslik}">
+      <div class="anime-info">
+        <h3>${anime.baslik}</h3>
+        <p>Yönetmen: ${anime.yonetmen}</p>
+        <p>IMDB: ${anime.imdb}</p>
+        <p>Yıl: ${anime.yil}</p>
+        <p>Tür: ${anime.tur}</p>
+        <button onclick="animeDetayGoster(${index})">Detaylar</button>
+      </div>
+    `;
+    animeListContainer.appendChild(animeDiv);
+  });
+
+  function animeDetayGoster(index) {
+    const anime = animeler[index];
+    document.getElementById("modalBaslik").textContent = anime.baslik;
+    document.getElementById("modalYonetmen").textContent = anime.yonetmen;
+    document.getElementById("modalIMDB").textContent = anime.imdb;
+    document.getElementById("modalAciklama").textContent = anime.aciklama;
+    document.getElementById("animeModal").style.display = "flex";
+  }
+
+  function modalKapat() {
+    document.getElementById("animeModal").style.display = "none";
+  }
+  </script>
+</body>
+</html>
